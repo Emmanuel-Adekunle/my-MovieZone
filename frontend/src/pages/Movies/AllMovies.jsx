@@ -8,7 +8,7 @@ import {
 import MovieCard from "./MovieCard";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import banner from "../../assets/banner.jpg";
+import banner from "../../assets/banner1.jpg";
 import {
   setMoviesFilter,
   setFilteredMovies,
@@ -86,7 +86,7 @@ const AllMovies = () => {
             <div className="relative z-10 text-center text-white mt-[10rem]">
               <h1 className="text-8xl font-bold mb-4">The Movies Hub</h1>
               <p className="text-2xl">
-                Cinematic Odyssey: Unveiling the Magic of Movies
+              Where Every Film Tells a Story
               </p>
             </div>
 
