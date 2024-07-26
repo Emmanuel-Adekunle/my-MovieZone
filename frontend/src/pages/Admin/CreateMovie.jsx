@@ -1,3 +1,4 @@
+// Importing necessary hooks and modules
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,9 +8,11 @@ import {
 import { useFetchGenresQuery } from "../../redux/api/genre";
 import { toast } from "react-toastify";
 
+// CreateMovie component
 const CreateMovie = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook for navigation
 
+  // State for movie data
   const [movieData, setMovieData] = useState({
     name: "",
     year: 0,
@@ -20,8 +23,9 @@ const CreateMovie = () => {
     genre: "",
   });
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // State for selected image
 
+  // Mutation hooks for creating movie and uploading image
   const [
     createMovie,
     { isLoading: isCreatingMovie, error: createMovieErrorDetail },
@@ -32,18 +36,20 @@ const CreateMovie = () => {
     { isLoading: isUploadingImage, error: uploadImageErrorDetails },
   ] = useUploadImageMutation();
 
-  const { data: genres, isLoading: isLoadingGenres } = useFetchGenresQuery();
+  const { data: genres, isLoading: isLoadingGenres } = useFetchGenresQuery(); // Query hook for fetching genres
 
+  // Effect hook to set the genre when genres data changes
   useEffect(() => {
     if (genres) {
       setMovieData((prevData) => ({
         ...prevData,
         genre: genres[0]?._id || "",
       }));
-      console.log(genres[0]?._id);
+      console.log(genres[0]?._id); // Log the first genre ID
     }
   }, [genres]);
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -62,13 +68,16 @@ const CreateMovie = () => {
     }
   };
 
+  // Handle image file selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedImage(file);
   };
 
+  // Handle creating a new movie
   const handleCreateMovie = async () => {
     try {
+      // Validate required fields
       if (
         !movieData.name ||
         !movieData.year ||
@@ -82,6 +91,7 @@ const CreateMovie = () => {
 
       let uploadedImagePath = null;
 
+      // Upload image if selected
       if (selectedImage) {
         const formData = new FormData();
         formData.append("image", selectedImage);
@@ -96,13 +106,15 @@ const CreateMovie = () => {
           return;
         }
 
+        // Create movie with uploaded image path
         await createMovie({
           ...movieData,
           image: uploadedImagePath,
         });
 
-        navigate("/admin/movies-list");
+        navigate("/admin/movies-list"); // Navigate to movies list
 
+        // Reset movie data
         setMovieData({
           name: "",
           year: 0,
@@ -113,7 +125,7 @@ const CreateMovie = () => {
           genre: "",
         });
 
-        toast.success("Movie Added To Database");
+        toast.success("Movie Added To Database"); // Show success message
       }
     } catch (error) {
       console.error("Failed to create movie: ", createMovieErrorDetail);
@@ -121,6 +133,7 @@ const CreateMovie = () => {
     }
   };
 
+  // Render the form
   return (
     <div className="container flex justify-center items-center mt-4">
       <form>
@@ -234,4 +247,5 @@ const CreateMovie = () => {
     </div>
   );
 };
+
 export default CreateMovie;

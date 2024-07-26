@@ -1,3 +1,4 @@
+// Importing necessary hooks and modules
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -8,10 +9,12 @@ import {
 } from "../../redux/api/movies";
 import { toast } from "react-toastify";
 
+// UpdateMovie component
 const UpdateMovie = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams(); // Get the movie ID from the URL parameters
+  const navigate = useNavigate(); // Hook for navigation
 
+  // State for movie data
   const [movieData, setMovieData] = useState({
     name: "",
     year: 0,
@@ -21,25 +24,25 @@ const UpdateMovie = () => {
     image: null,
   });
 
-  const [selectedImage, setSelectedImage] = useState(null);
-  const { data: initialMovieData } = useGetSpecificMovieQuery(id);
+  const [selectedImage, setSelectedImage] = useState(null); // State for selected image
+  const { data: initialMovieData } = useGetSpecificMovieQuery(id); // Query to fetch the specific movie data
 
+  // Effect hook to set the movie data when initialMovieData changes
   useEffect(() => {
     if (initialMovieData) {
       setMovieData(initialMovieData);
     }
   }, [initialMovieData]);
 
-  const [updateMovie, { isLoading: isUpdatingMovie }] =
-    useUpdateMovieMutation();
-
+  // Mutation hooks for updating movie, uploading image, and deleting movie
+  const [updateMovie, { isLoading: isUpdatingMovie }] = useUpdateMovieMutation();
   const [
     uploadImage,
     { isLoading: isUploadingImage, error: uploadImageErrorDetails },
   ] = useUploadImageMutation();
-
   const [deleteMovie] = useDeleteMovieMutation();
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMovieData((prevData) => ({
@@ -48,25 +51,24 @@ const UpdateMovie = () => {
     }));
   };
 
+  // Handle image file selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setSelectedImage(file);
   };
 
+  // Handle updating the movie
   const handleUpdateMovie = async () => {
     try {
-      if (
-        !movieData.name ||
-        !movieData.year ||
-        !movieData.detail ||
-        !movieData.cast
-      ) {
+      // Validate required fields
+      if (!movieData.name || !movieData.year || !movieData.detail || !movieData.cast) {
         toast.error("Please fill in all required fields");
         return;
       }
 
       let uploadedImagePath = movieData.image;
 
+      // Upload image if selected
       if (selectedImage) {
         const formData = new FormData();
         formData.append("image", selectedImage);
@@ -82,6 +84,7 @@ const UpdateMovie = () => {
         }
       }
 
+      // Update movie with the new data
       await updateMovie({
         id: id,
         updatedMovie: {
@@ -90,23 +93,25 @@ const UpdateMovie = () => {
         },
       });
 
-      navigate("/movies");
+      navigate("/movies"); // Navigate to movies page
     } catch (error) {
       console.error("Failed to update movie:", error);
     }
   };
 
+  // Handle deleting the movie
   const handleDeleteMovie = async () => {
     try {
       toast.success("Movie deleted successfully");
       await deleteMovie(id);
-      navigate("/movies");
+      navigate("/movies"); // Navigate to movies page
     } catch (error) {
       console.error("Failed to delete movie:", error);
       toast.error(`Failed to delete movie: ${error?.message}`);
     }
   };
 
+  // Render the form
   return (
     <div className="container flex justify-center items-center mt-4">
       <form>
@@ -209,4 +214,5 @@ const UpdateMovie = () => {
     </div>
   );
 };
+
 export default UpdateMovie;

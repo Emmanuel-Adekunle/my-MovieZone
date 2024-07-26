@@ -1,5 +1,7 @@
+// Importing necessary module
 import { Link } from "react-router-dom";
 
+// MovieCard component
 const MovieCard = ({ movie }) => {
   return (
     <div key={movie._id} className="relative group m-[2rem]">

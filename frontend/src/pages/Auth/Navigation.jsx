@@ -1,3 +1,4 @@
+// Importing necessary hooks and modules
 import { useState } from "react";
 import {
   AiOutlineHome,
@@ -5,30 +6,31 @@ import {
   AiOutlineUserAdd,
 } from "react-icons/ai";
 import { MdOutlineLocalMovies } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/users";
 import { logout } from "../../redux/features/auth/authSlice";
 
+// Navigation component
 const Navigation = () => {
-  const { userInfo } = useSelector((state) => state.auth);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { userInfo } = useSelector((state) => state.auth); // Selector for user info from state
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown visibility
 
   const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+    setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
   };
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch(); // Hook for dispatching actions
+  const navigate = useNavigate(); // Hook for navigation
 
-  const [logoutApiCall] = useLogoutMutation();
+  const [logoutApiCall] = useLogoutMutation(); // Mutation hook for logout
 
+  // Handle logout
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
-      dispatch(logout());
-      navigate("/login");
+      dispatch(logout()); // Dispatch logout action
+      navigate("/login"); // Navigate to login page
     } catch (error) {
       console.error(error);
     }
@@ -37,7 +39,7 @@ const Navigation = () => {
   return (
     <div className="fixed bottom-10 left-[30rem] transform translate-x-1/2 translate-y-1/2 z-50 bg-[#0f0f0f] border w-[30%] px-[4rem] mb-[2rem] rounded">
       <section className="flex justify-between items-center">
-        {/* Section 1 */}
+        {/* Section 1: Navigation Links */}
         <div className="flex justify-center items-center mb-[2rem]">
           <Link
             to="/"
@@ -55,7 +57,7 @@ const Navigation = () => {
             <span className="hidden nav-item-name mt-[3rem]">SHOP</span>
           </Link>
         </div>
-        {/* Section 2 */}
+        {/* Section 2: User Info and Actions */}
         <div className="relative">
           <button
             onClick={toggleDropdown}
@@ -94,16 +96,14 @@ const Navigation = () => {
               }`}
             >
               {userInfo.isAdmin && (
-                <>
-                  <li>
-                    <Link
-                      to="/admin/movies/dashboard"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      Dashboard
-                    </Link>
-                  </li>
-                </>
+                <li>
+                  <Link
+                    to="/admin/movies/dashboard"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
               )}
 
               <li>

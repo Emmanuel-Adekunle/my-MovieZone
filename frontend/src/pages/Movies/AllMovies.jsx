@@ -1,40 +1,34 @@
-import { useGetAllMoviesQuery } from "../../redux/api/movies";
-import { useFetchGenresQuery } from "../../redux/api/genre";
-import {
-  useGetNewMoviesQuery,
-  useGetTopMoviesQuery,
-  useGetRandomMoviesQuery,
-} from "../../redux/api/movies";
-import MovieCard from "./MovieCard";
+// Importing necessary hooks and modules
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useGetAllMoviesQuery, useGetNewMoviesQuery, useGetTopMoviesQuery, useGetRandomMoviesQuery } from "../../redux/api/movies";
+import { useFetchGenresQuery } from "../../redux/api/genre";
+import MovieCard from "./MovieCard";
 import banner from "../../assets/banner1.jpg";
-import {
-  setMoviesFilter,
-  setFilteredMovies,
-  setMovieYears,
-  setUniqueYears,
-} from "../../redux/features/movies/moviesSlice";
+import { setMoviesFilter, setFilteredMovies, setMovieYears, setUniqueYears } from "../../redux/features/movies/moviesSlice";
 
+// AllMovies component
 const AllMovies = () => {
-  const dispatch = useDispatch();
-  const { data } = useGetAllMoviesQuery();
-  const { data: genres } = useFetchGenresQuery();
-  const { data: newMovies } = useGetNewMoviesQuery();
-  const { data: topMovies } = useGetTopMoviesQuery();
-  const { data: randomMovies } = useGetRandomMoviesQuery();
+  const dispatch = useDispatch(); // Hook for dispatching actions
+  const { data } = useGetAllMoviesQuery(); // Query to get all movies
+  const { data: genres } = useFetchGenresQuery(); // Query to get all genres
+  const { data: newMovies } = useGetNewMoviesQuery(); // Query to get new movies
+  const { data: topMovies } = useGetTopMoviesQuery(); // Query to get top movies
+  const { data: randomMovies } = useGetRandomMoviesQuery(); // Query to get random movies
 
-  const { moviesFilter, filteredMovies } = useSelector((state) => state.movies);
+  const { moviesFilter, filteredMovies } = useSelector((state) => state.movies); // Selector for movies filter and filtered movies
 
-  const movieYears = data?.map((movie) => movie.year);
-  const uniqueYears = Array.from(new Set(movieYears));
+  const movieYears = data?.map((movie) => movie.year); // Extracting movie years
+  const uniqueYears = Array.from(new Set(movieYears)); // Getting unique years
 
+  // Effect hook to set filtered movies, movie years, and unique years when data changes
   useEffect(() => {
     dispatch(setFilteredMovies(data || []));
     dispatch(setMovieYears(movieYears));
     dispatch(setUniqueYears(uniqueYears));
   }, [data, dispatch]);
 
+  // Handle search input change
   const handleSearchChange = (e) => {
     dispatch(setMoviesFilter({ searchTerm: e.target.value }));
 
@@ -45,16 +39,19 @@ const AllMovies = () => {
     dispatch(setFilteredMovies(filteredMovies));
   };
 
+  // Handle genre click
   const handleGenreClick = (genreId) => {
     const filterByGenre = data.filter((movie) => movie.genre === genreId);
     dispatch(setFilteredMovies(filterByGenre));
   };
 
+  // Handle year change
   const handleYearChange = (year) => {
     const filterByYear = data.filter((movie) => movie.year === +year);
     dispatch(setFilteredMovies(filterByYear));
   };
 
+  // Handle sort change
   const handleSortChange = (sortOption) => {
     switch (sortOption) {
       case "new":
@@ -66,7 +63,6 @@ const AllMovies = () => {
       case "random":
         dispatch(setFilteredMovies(randomMovies));
         break;
-
       default:
         dispatch(setFilteredMovies([]));
         break;
@@ -85,9 +81,7 @@ const AllMovies = () => {
 
             <div className="relative z-10 text-center text-white mt-[10rem]">
               <h1 className="text-8xl font-bold mb-4">The Movies Hub</h1>
-              <p className="text-2xl">
-              Where Every Film Tells a Story
-              </p>
+              <p className="text-2xl">Where Every Film Tells a Story</p>
             </div>
 
             <section className="absolute -bottom-[5rem]">
@@ -98,7 +92,7 @@ const AllMovies = () => {
                 value={moviesFilter.searchTerm}
                 onChange={handleSearchChange}
               />
-              <section className="sorts-container mt-[2rem] ml-[10rem]  w-[30rem]">
+              <section className="sorts-container mt-[2rem] ml-[10rem] w-[30rem]">
                 <select
                   className="border p-2 rounded text-black"
                   value={moviesFilter.selectedGenre}

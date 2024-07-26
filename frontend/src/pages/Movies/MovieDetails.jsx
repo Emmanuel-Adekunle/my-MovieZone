@@ -1,3 +1,4 @@
+// Importing necessary hooks and modules
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -8,15 +9,17 @@ import {
 } from "../../redux/api/movies";
 import MovieTabs from "./MovieTabs";
 
+// MovieDetails component
 const MovieDetails = () => {
-  const { id: movieId } = useParams();
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const { data: movie, refetch } = useGetSpecificMovieQuery(movieId);
-  const { userInfo } = useSelector((state) => state.auth);
+  const { id: movieId } = useParams(); // Get the movie ID from the URL parameters
+  const [rating, setRating] = useState(0); // State for rating
+  const [comment, setComment] = useState(""); // State for comment
+  const { data: movie, refetch } = useGetSpecificMovieQuery(movieId); // Query to get specific movie details
+  const { userInfo } = useSelector((state) => state.auth); // Selector for user info from state
   const [createReview, { isLoading: loadingMovieReview }] =
-    useAddMovieReviewMutation();
+    useAddMovieReviewMutation(); // Mutation hook for adding a movie review
 
+  // Handle form submission for adding a review
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -27,11 +30,11 @@ const MovieDetails = () => {
         comment,
       }).unwrap();
 
-      refetch();
+      refetch(); // Refetch movie details to update reviews
 
-      toast.success("Review created successfully");
+      toast.success("Review created successfully"); // Show success toast
     } catch (error) {
-      toast.error(error.data || error.message);
+      toast.error(error.data || error.message); // Show error toast
     }
   };
 
@@ -40,7 +43,7 @@ const MovieDetails = () => {
       <div>
         <Link
           to="/"
-          className="  text-white font-semibold hover:underline ml-[20rem]"
+          className="text-white font-semibold hover:underline ml-[20rem]"
         >
           Go Back
         </Link>
@@ -55,7 +58,7 @@ const MovieDetails = () => {
           />
         </div>
         {/* Container One */}
-        <div className="container  flex justify-between ml-[20rem] mt-[3rem]">
+        <div className="container flex justify-between ml-[20rem] mt-[3rem]">
           <section>
             <h2 className="text-5xl my-4 font-extrabold">{movie?.name}</h2>
             <p className="my-4 xl:w-[35rem] lg:w-[35rem] md:w-[30rem] text-[#B0B0B0]">
@@ -69,8 +72,8 @@ const MovieDetails = () => {
             </p>
 
             <div>
-              {movie?.cast.map((c) => (
-                <ul key={c._id}>
+              {movie?.cast.map((c, index) => (
+                <ul key={index}>
                   <li className="mt-[1rem]">{c}</li>
                 </ul>
               ))}

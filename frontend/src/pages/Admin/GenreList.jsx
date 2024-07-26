@@ -1,3 +1,4 @@
+// Importing necessary hooks and modules
 import { useState } from "react";
 import {
   useCreateGenreMutation,
@@ -5,22 +6,24 @@ import {
   useDeleteGenreMutation,
   useFetchGenresQuery,
 } from "../../redux/api/genre";
-
 import { toast } from "react-toastify";
 import GenreForm from "../../component/GenreForm";
 import Modal from "../../component/Modal";
 
+// GenreList component
 const GenreList = () => {
-  const { data: genres, refetch } = useFetchGenresQuery();
-  const [name, setName] = useState("");
-  const [selectedGenre, setSelectedGenre] = useState(null);
-  const [updatingName, setUpdatingName] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const { data: genres, refetch } = useFetchGenresQuery(); // Fetch genres query hook
+  const [name, setName] = useState(""); // State for genre name
+  const [selectedGenre, setSelectedGenre] = useState(null); // State for selected genre
+  const [updatingName, setUpdatingName] = useState(""); // State for updating genre name
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
 
+  // Mutation hooks for creating, updating, and deleting genres
   const [createGenre] = useCreateGenreMutation();
   const [updateGenre] = useUpdateGenreMutation();
   const [deleteGenre] = useDeleteGenreMutation();
 
+  // Handle creating a new genre
   const handleCreateGenre = async (e) => {
     e.preventDefault();
 
@@ -45,6 +48,7 @@ const GenreList = () => {
     }
   };
 
+  // Handle updating a genre
   const handleUpdateGenre = async (e) => {
     e.preventDefault();
 
@@ -75,6 +79,7 @@ const GenreList = () => {
     }
   };
 
+  // Handle deleting a genre
   const handleDeleteGenre = async () => {
     try {
       const result = await deleteGenre(selectedGenre._id).unwrap();
@@ -89,10 +94,11 @@ const GenreList = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Genre deletion failed. Tray again.");
+      toast.error("Genre deletion failed. Try again.");
     }
   };
 
+  // Render the genre list and forms
   return (
     <div className="ml-[10rem] flex flex-col md:flex-row">
       <div className="md:w-3/4 p-3">
@@ -111,11 +117,9 @@ const GenreList = () => {
               <button
                 className="bg-white border border-teal-500 text-teal-500 py-2 px-4 rounded-lg m-3 hover:bg-teal-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50"
                 onClick={() => {
-                  {
-                    setModalVisible(true);
-                    setSelectedGenre(genre);
-                    setUpdatingName(genre.name);
-                  }
+                  setModalVisible(true);
+                  setSelectedGenre(genre);
+                  setUpdatingName(genre.name);
                 }}
               >
                 {genre.name}

@@ -1,3 +1,4 @@
+// Importing necessary hooks and modules
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,36 +7,39 @@ import { setCredentials } from "../../redux/features/auth/authSlice";
 import { useLoginMutation } from "../../redux/api/users";
 import { toast } from "react-toastify";
 
+// Login component
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(""); // State for email
+  const [password, setPassword] = useState(""); // State for password
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch(); // Hook for dispatching actions
+  const navigate = useNavigate(); // Hook for navigation
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation(); // Mutation hook for login
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth); // Selector for user info from state
 
-  const { search } = useLocation();
+  const { search } = useLocation(); // Hook to get the current location
   const sp = new URLSearchParams(search);
-  const redirect = sp.get("redirect") || "/";
+  const redirect = sp.get("redirect") || "/"; // Get redirect URL or default to root
 
+  // Effect hook to redirect if user is logged in
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
     }
   }, [navigate, redirect, userInfo]);
 
+  // Handle form submission
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
-      navigate(redirect);
+      const res = await login({ email, password }).unwrap(); // Login mutation
+      dispatch(setCredentials({ ...res })); // Dispatch credentials to state
+      navigate(redirect); // Navigate to redirect URL
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error); // Show error toast
     }
   };
 
